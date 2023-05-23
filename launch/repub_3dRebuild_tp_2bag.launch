@@ -1,0 +1,16 @@
+<launch>
+    <arg name="bag_name1" default="1"/>
+    <arg name="bag_name2" default="2"/>
+    <arg name="bag_name3" default="3"/>
+    <arg name="bag_name4" default="5"/>
+
+    <arg name="ns" default="/"/>
+
+    <group ns = "$(arg bag_name1)">
+        <node pkg="rosbag" type="play" name="player" output="screen" args="--clock -l /home/jun/folder_lyy/3d_rebuild_rosbag/$(arg bag_name1).bag /livox/lidar:=/livox_$(arg bag_name1)/lidar /usb_cam/image_raw/compressed:=/usb_cam/image_$(arg bag_name1)/compressed"/>
+    </group>
+    <group ns = "$(arg bag_name2)">
+        <node pkg="rosbag" type="play" name="player" output="screen" args="--clock -l /home/jun/folder_lyy/3d_rebuild_rosbag/$(arg bag_name2).bag /livox/lidar:=/livox_$(arg bag_name2)/lidar /usb_cam/image_raw/compressed:=/usb_cam/image_$(arg bag_name2)/compressed"/>
+    </group>
+    
+</launch>

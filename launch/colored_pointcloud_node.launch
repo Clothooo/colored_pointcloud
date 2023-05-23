@@ -1,0 +1,43 @@
+<launch>
+  <!-- <include file="$(find pointgrey_camera_driver)/launch/camera_161.launch" /> -->
+  
+  <arg name="color_distance" default="1.2" />
+  <arg name="show_colored_cloud" default="true" />
+  <arg name="save_data" default="false" />
+  <arg name="ns_" default="/"/>
+  <arg name="camera_tp" default="/usb_cam/image_raw"/>
+  <arg name="lidar_tp" default="/livox/lidar"/>
+  <arg name="param_file_name" default="calib_result.yaml"/>
+  <arg name="isSynced" default="false"/>
+
+  <group unless="$(arg isSynced)">
+    <include file="$(find livox_sync)/launch/livox_time_sync.launch">
+      <arg name="ns" value="$(arg ns_)"/>
+      <arg name="camera_tp" value="$(arg camera_tp)"/>
+      <arg name="livox_tp" value="$(arg lidar_tp)"/>
+      <arg name="sync_type" value="cam_time"/>
+    </include>
+  </group>
+
+
+  <group ns="$(arg ns_)">
+
+    <!-- <node name="decompress_image" pkg="image_transport" type="republish" args="compressed in:=$(arg camera_tp) raw out:=$(arg camera_tp)" /> -->
+    
+    <node pkg="colored_pointcloud" type="colored_pointcloud_node161" name="colored_pointcloud_node" output="screen">
+      <param name="camera_topic" type="str" value="$(arg camera_tp)" />
+      <param name="lidar_topic" type="str" value="/$(arg lidar_tp)/cam_time_sync" unless="$(arg isSynced)"/>
+      <param name="lidar_topic" type="str" value="$(arg lidar_tp)" if="$(arg isSynced)"/>
+      <param name="calib_file_path" type="str" value="$(find colored_pointcloud)/config" />
+      <param name="file_name" type="str" value="$(arg param_file_name)" />
+      <param name="color_distance" type="double" value="$(arg color_distance)" />
+      <param name="show_colored_cloud" type="bool" value="$(arg show_colored_cloud)" />
+      <param name="save_data" type="bool" value="$(arg save_data)" />
+    </node>
+  </group>
+
+  <node pkg="rviz" name="rviz" type="rviz"  args="-d $(find colored_pointcloud)/rviz/colored_pointcloud161.rviz">
+  </node>
+  <!-- <node pkg="rviz" name="rviz" type="rviz"  args="-d $(find colored_pointcloud)/rviz/3Drebuild_onesight.rviz">
+  </node> -->
+</launch>

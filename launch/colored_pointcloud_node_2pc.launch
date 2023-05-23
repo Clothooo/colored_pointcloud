@@ -1,0 +1,27 @@
+<launch>
+  <!-- <include file="$(find pointgrey_camera_driver)/launch/camera_161.launch" /> -->
+  <arg name="camera1_tp" default="/usb_cam/image_1"/>
+  <arg name="camera2_tp" default="/usb_cam/image_2"/>
+  <arg name="lidar1_tp" default="/livox_1/lidar"/>
+  <arg name="lidar2_tp" default="/livox_2/lidar"/>
+  <arg name="param_file1_name" default="calib_result.yaml"/>
+  <arg name="param_file2_name" default="calib_result.yaml"/>
+  <arg name="isSynced" default="false"/>
+
+  <include file="$(find colored_pointcloud)/launch/colored_pointcloud_node.launch">
+    <arg name="ns_" value="laser1"/>
+    <arg name="camera_tp" value="$(arg camera1_tp)"/>
+    <arg name="lidar_tp" value="$(arg lidar1_tp)"/>
+    <arg name="param_file_name" value="$(arg param_file1_name)"/>
+    <arg name="isSynced" value="$(arg isSynced)"/>
+  </include>
+
+  <include file="$(find colored_pointcloud)/launch/colored_pointcloud_node.launch">
+    <arg name="ns_" value="laser2"/>
+    <arg name="camera_tp" value="$(arg camera2_tp)"/>
+    <arg name="lidar_tp" value="$(arg lidar2_tp)"/>
+    <arg name="param_file_name" value="$(arg param_file2_name)"/>
+    <arg name="isSynced" value="$(arg isSynced)"/>
+  </include>
+  
+</launch>

@@ -1,0 +1,8 @@
+<launch>
+    <arg name="bag_name" default="1"/>
+    <arg name="ns" default="/"/>
+
+    <group ns = "$(arg bag_name)">
+        <node pkg="rosbag" type="play" name="player" output="screen" args="--clock -l /home/jun/folder_lyy/3d_rebuild_rosbag/$(arg bag_name).bag /livox/lidar:=/livox_$(arg bag_name)/lidar /usb_cam/image_raw/compressed:=/usb_cam/image_$(arg bag_name)/compressed"/>
+    </group>
+</launch>
