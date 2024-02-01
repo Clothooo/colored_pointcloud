@@ -8,7 +8,7 @@
   <arg name="camera_tp" default="/usb_cam/image_raw"/>
   <arg name="lidar_tp" default="/livox/lidar"/>
   <arg name="param_file_name" default="calib_result.yaml"/>
-  <arg name="isSynced" default="false"/>
+  <arg name="isSynced" default="true"/>
 
   <group unless="$(arg isSynced)">
     <include file="$(find livox_sync)/launch/livox_time_sync.launch">
