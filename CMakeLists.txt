@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(colored_pointcloud)
-add_compile_options(-std=c++11)
+add_compile_options(-std=c++14)
 set(CMAKE_BUILD_TYPE Release)
 
 find_package(catkin REQUIRED COMPONENTS
@@ -67,7 +67,7 @@ include_directories(
 )
 
 # opencv
-find_package(OpenCV 3 REQUIRED)
+find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 # pcl
