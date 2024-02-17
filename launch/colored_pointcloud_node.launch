@@ -8,7 +8,8 @@
   <arg name="camera_tp" default="/usb_cam/image_raw"/>
   <arg name="lidar_tp" default="/livox/lidar"/>
   <arg name="param_file_name" default="calib_result.yaml"/>
-  <arg name="isSynced" default="false"/>
+  <arg name="ext_l2c" default="true"/> <!--lidar to cam extrinsic matrix or cam to lidar-->
+  <arg name="isSynced" default="true"/>
 
   <group unless="$(arg isSynced)">
     <include file="$(find livox_sync)/launch/livox_time_sync.launch">
@@ -30,13 +31,14 @@
       <param name="lidar_topic" type="str" value="$(arg lidar_tp)" if="$(arg isSynced)"/>
       <param name="calib_file_path" type="str" value="$(find colored_pointcloud)/config" />
       <param name="file_name" type="str" value="$(arg param_file_name)" />
+      <param name="ext_l2c" type="bool" value="$(arg ext_l2c)" />
       <param name="color_distance" type="double" value="$(arg color_distance)" />
       <param name="show_colored_cloud" type="bool" value="$(arg show_colored_cloud)" />
       <param name="save_data" type="bool" value="$(arg save_data)" />
     </node>
   </group>
 
-  <node pkg="rviz" name="rviz" type="rviz"  args="-d $(find colored_pointcloud)/rviz/colored_pointcloud161.rviz">
+  <node pkg="rviz" name="rviz_reproj" type="rviz"  args="-d $(find colored_pointcloud)/rviz/colored_pointcloud161.rviz">
   </node>
   <!-- <node pkg="rviz" name="rviz" type="rviz"  args="-d $(find colored_pointcloud)/rviz/3Drebuild_onesight.rviz">
   </node> -->

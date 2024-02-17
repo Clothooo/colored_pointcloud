@@ -66,7 +66,7 @@ class RsCamFusion
     int frame_count = 0;
 
   public:
-    RsCamFusion(cv::Mat cam_intrinsic, cv::Mat lidar2cam_extrinsic, cv::Mat cam_distcoeff, cv::Size img_size, cv::Mat lidar2ref_extrinsic, float color_dis, bool show_cloud, bool save)
+    RsCamFusion(cv::Mat cam_intrinsic, cv::Mat lidar2cam_extrinsic, cv::Mat cam_distcoeff, cv::Size img_size, cv::Mat lidar2ref_extrinsic, bool ext_l2c, float color_dis, bool show_cloud, bool save)
     {
       intrinsic = cam_intrinsic;
       extrinsic = lidar2cam_extrinsic;
@@ -107,7 +107,8 @@ class RsCamFusion
       tr_l2ref(3,3) = lidar2ref_extrinsic.at<double>(3,3);
       tr_ref2l = tr_l2ref.inverse();
 
-      transform = tr_l2c * tr_ref2l;
+      if(ext_l2c) transform = tr_l2c * tr_ref2l;
+      else transform = tr_l2c.inverse() * tr_ref2l;
       inv_transform = transform.inverse();
       // inv_transform = transform;
       // transform = inv_transform.inverse();
@@ -293,7 +294,7 @@ int main(int argc, char** argv)
   std::string config_path, file_name;
   std::string camera_topic, lidar_topic;
   float color_dis;
-  bool show_cloud, save_data;
+  bool show_cloud, save_data, ext_l2c;
   if (priv_nh.hasParam("calib_file_path") && priv_nh.hasParam("file_name"))
   {
     priv_nh.getParam("camera_topic", camera_topic);
@@ -303,6 +304,7 @@ int main(int argc, char** argv)
     priv_nh.getParam("color_distance", color_dis);
     priv_nh.getParam("show_colored_cloud", show_cloud);
     priv_nh.getParam("save_data", save_data);
+    priv_nh.getParam("ext_l2c", ext_l2c);
   }
   else
   {
@@ -337,14 +339,15 @@ int main(int argc, char** argv)
     return 0;
   }
   cout << lidar2cam_extrinsic.inv() << endl;
+  INFO << "Is LiDAR2Camear Extrinsic: " << ext_l2c << REND;
   INFO << "lidar topic: " << lidar_topic << REND;
   INFO << "camera topic: " << camera_topic << REND;
   INFO << "camera intrinsic matrix: " << cam_intrinsic << REND;
-  INFO << "lidar2cam entrinsic matrix: " << lidar2cam_extrinsic << REND;
+  INFO << "lidar2cam extrinsic matrix: " << lidar2cam_extrinsic << REND;
   INFO << "lidar2ref extrinsic matrix: " << lidar2ref_extrinsic << REND;
 
   
-  RsCamFusion fusion(cam_intrinsic, lidar2cam_extrinsic, cam_distcoeff, img_size, lidar2ref_extrinsic, color_dis, show_cloud, save_data); 
+  RsCamFusion fusion(cam_intrinsic, lidar2cam_extrinsic, cam_distcoeff, img_size, lidar2ref_extrinsic, ext_l2c, color_dis, show_cloud, save_data); 
   message_filters::Subscriber<sensor_msgs::Image> camera_sub(nh, camera_topic, 30);
   message_filters::Subscriber<sensor_msgs::PointCloud2> lidar_sub(nh, lidar_topic, 10);
   
